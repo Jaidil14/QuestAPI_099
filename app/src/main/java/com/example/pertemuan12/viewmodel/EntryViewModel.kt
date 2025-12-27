@@ -10,34 +10,31 @@ import com.example.pertemuan12.modeldata.toDataSiswa
 import com.example.pertemuan12.repositori.RepositoryDataSiswa
 import retrofit2.Response
 
-
-class EntryViewModel(private val repositoryDataSiswa : RepositoryDataSiswa):
+class EntryViewModel(private val repositoryDataSiswa: RepositoryDataSiswa):
     ViewModel() {
     var uiStateSiswa by mutableStateOf(UIStateSiswa())
-            private set
+        private set
 
-    /* Fungsi untuk memvalidasi input */
-
-    private fun validasiInput(uiState: DetailSiswa = uiStateSiswa.detailSiswa): Boolean {
+    private fun validasiInput(uiState: DetailSiswa = uiStateSiswa.detailSiswa):
+            Boolean {
         return with(uiState) {
             nama.isNotBlank() && alamat.isNotBlank() && telepon.isNotBlank()
         }
     }
 
-    // Fungsi untuk menangani saat ada perubahan pada text input
-    fun updateUiSiswa(detailSiswa: DetailSiswa) {
+    fun updateUiState(detailSiswa: DetailSiswa) {
         uiStateSiswa =
-            UIStateSiswa(detailSiswa = detailSiswa, isEntryValid = validasiInput(detailSiswa))
+            UIStateSiswa(detailSiswa = detailSiswa, isEntryValid =
+                validasiInput(detailSiswa))
     }
 
-    /* Fungsi untuk menyimpan data yang di-entry*/
     suspend fun addSiswa() {
         if (validasiInput()) {
-            val sip: Response<Void> = repositoryDataSiswa
+            val sip:Response<Void> = repositoryDataSiswa
                 .postDataSiswa(uiStateSiswa.detailSiswa.toDataSiswa())
-            if (sip.isSuccessful){
+            if (sip.isSuccessful) {
                 println("Sukses Tambah Data : ${sip.message()}")
-            }else{
+            } else {
                 println("Gagal Tambah Data : ${sip.errorBody()}")
             }
         }

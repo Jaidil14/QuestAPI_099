@@ -1,6 +1,5 @@
 package com.example.pertemuan12.viewmodel
 
-import android.net.http.HttpException
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,32 +8,32 @@ import androidx.lifecycle.viewModelScope
 import com.example.pertemuan12.modeldata.DataSiswa
 import com.example.pertemuan12.repositori.RepositoryDataSiswa
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 
 sealed interface StatusUiSiswa {
-    data class Success(val siswa: List<DataSiswa> = listOf()) : StatusUiSiswa
+    data class Success(val siswa: List<DataSiswa>) : StatusUiSiswa
     object Error : StatusUiSiswa
     object Loading : StatusUiSiswa
 }
-
-class HomeViewModel(private val repositoryDataSiswa: RepositoryDataSiswa):
-        ViewModel() {
+class HomeViewModel(private val repositoryDataSiswa: RepositoryDataSiswa) :
+    ViewModel() {
     var listSiswa: StatusUiSiswa by mutableStateOf(StatusUiSiswa.Loading)
         private set
 
-    init {
+    init{
         loadSiswa()
     }
 
-    fun loadSiswa() {
+    fun loadSiswa(){
         viewModelScope.launch {
             listSiswa = StatusUiSiswa.Loading
             listSiswa = try {
                 StatusUiSiswa.Success(repositoryDataSiswa
-                        .getDataSiswa())
+                    .getDataSiswa())
             } catch (e: IOException) {
                 StatusUiSiswa.Error
-            } catch (e: HttpException){
+            } catch (e: HttpException) {
                 StatusUiSiswa.Error
             }
         }
